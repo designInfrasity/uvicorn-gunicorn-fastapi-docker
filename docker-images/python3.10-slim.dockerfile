@@ -8,9 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     make \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install dependencies
+# Copy requirements and install dependencies with optimized pip flags and cleanup
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt && rm -rf /tmp/requirements.txt
 
 # Stage 2: Runtime - Use slim base image without build tools
 FROM tiangolo/uvicorn-gunicorn:python3.10-slim
