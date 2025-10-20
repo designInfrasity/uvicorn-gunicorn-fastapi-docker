@@ -1,0 +1,56 @@
+# Git and VCS files
+.git
+.gitignore
+.github
+.gitattributes
+
+# Documentation
+README.md
+SECURITY.md
+*.md
+docs/
+
+# Python-specific exclusions
+__pycache__
+*.py[cod]
+*$py.class
+.pytest_cache
+.mypy_cache
+*.egg-info/
+.tox/
+.coverage
+htmlcov/
+
+# IDE and OS files
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.iml
+.venv/
+venv/
+env/
+
+# Test directories
+tests/
+test_*/
+*_test.py
+
+# Build artifacts
+build/
+dist/
+*.egg
+*.whl
+
+# Log files
+*.log
+*.log.*
+
+# CI/CD files
+.github/
+.travis.yml
+.circleci/
+azure-pipelines.yml
+
+# Keep only requirements.txt and app/ directory
+# (These are intentionally NOT excluded as they are needed for the build)
