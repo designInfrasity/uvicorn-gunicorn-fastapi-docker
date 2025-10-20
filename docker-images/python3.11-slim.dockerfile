@@ -15,6 +15,7 @@ RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt && rm -rf /tmp
 # Stage 2: Runtime - Use slim base image without build tools
 FROM tiangolo/uvicorn-gunicorn:python3.11-slim
 
+# Add maintainer label immediately after FROM for optimal layer caching
 LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
 
 # Copy installed packages from builder stage
