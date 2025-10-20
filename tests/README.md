@@ -15,6 +15,7 @@ tests/
 ├── test_01_main/                      # Runtime functionality tests
 │   ├── __init__.py
 │   └── test_defaults.py              # Main test suite
+├── test_02_build_optimization.py     # Build optimization validation tests
 └── utils.py                          # Test utilities and helpers
 ```
 
@@ -53,6 +54,53 @@ The main test suite validates:
    - Container starts successfully
    - Container can be stopped and restarted
    - Configuration persists across restarts
+
+### Build Optimization Tests (test_02_build_optimization.py)
+
+The build optimization test suite validates build-time optimizations are working correctly:
+
+1. **Dockerignore Exclusions** (TestDockerignoreExclusions)
+   - Verify .dockerignore file exists
+   - Check exclusion of .git and .github directories
+   - Validate test files and directories are excluded
+   - Confirm documentation files (*.md) are excluded
+   - Verify Python cache directories (__pycache__, *.pyc) are excluded
+
+2. **Build Context Size** (TestBuildContextSize)
+   - Validate build context size is under 50KB limit
+   - Ensure .dockerignore effectively reduces build context
+   - Parse and measure actual build context from Docker output
+
+3. **Layer Optimization** (TestLayerOptimization)
+   - Verify layer count is reasonable (≤ 15 layers)
+   - Validate proper layer ordering (requirements before app code)
+   - Ensure optimal caching structure
+
+4. **BuildKit Cache Mount Syntax** (TestBuildKitCacheMountSyntax)
+   - Verify BuildKit syntax directive (# syntax=docker/dockerfile:1)
+   - Check cache mount configuration (--mount=type=cache)
+   - Validate pip cache directory target (/root/.cache/pip)
+
+5. **Dependency Installation** (TestDependencyInstallation)
+   - Verify FastAPI is installed correctly
+   - Verify Uvicorn is installed correctly
+   - Confirm requirements.txt is removed from final image
+
+6. **Unnecessary Files Exclusion** (TestUnnecessaryFilesExclusion)
+   - Verify .git directory is NOT in final image
+   - Verify tests directory is NOT in final image
+   - Verify .github directory is NOT in final image
+   - Confirm /app directory DOES exist
+   - Confirm /app/main.py DOES exist
+
+7. **Image Size Ranges** (TestImageSizeRanges)
+   - Validate image sizes are reasonable
+   - Standard images: 800-1200MB expected
+   - Slim images: 300-600MB expected
+   - Detect size regressions
+
+**Test Count**: 20 test methods across 7 test classes
+**Parametrization**: Tests run for all 6 image variants using pytest.mark.parametrize
 
 ### Image Variants Tested
 
@@ -329,11 +377,15 @@ Recommended pre-commit test command:
 
 ## Future Test Development (Roadmap)
 
-### Step 6.2: Build Validation Tests
-- Validate .dockerignore effectiveness
-- Test build context size reduction
-- Verify layer count optimization
-- Check final image doesn't contain excluded files
+### Step 6.2: Build Validation Tests ✅ COMPLETED
+- ✅ Validate .dockerignore effectiveness
+- ✅ Test build context size reduction
+- ✅ Verify layer count optimization
+- ✅ Check final image doesn't contain excluded files
+- ✅ Verify BuildKit cache mount syntax
+- ✅ Test dependency installation
+- ✅ Validate image size ranges
+- **File**: `test_02_build_optimization.py` (567 lines, 20 test methods)
 
 ### Step 6.3: Build Performance Tests
 - Measure cold vs warm build times
