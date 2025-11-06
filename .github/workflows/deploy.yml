@@ -49,14 +49,18 @@ jobs:
         run: echo "DATE_TAG=$(date -I)" >> "$GITHUB_ENV"
       - name: Build and push
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILDKIT: 1
         with:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
             tiangolo/uvicorn-gunicorn-fastapi:${{ matrix.image.name }}
-            tiangolo/uvicorn-gunicorn-fastapi:${{ matrix.image.name }}-${{ env.DATE_TAG }} 
+            tiangolo/uvicorn-gunicorn-fastapi:${{ matrix.image.name }}-${{ env.DATE_TAG }}
           context: ./docker-images/
           file: ./docker-images/${{ env.DOCKERFILE_NAME }}.dockerfile
+          cache-from: type=registry,ref=tiangolo/uvicorn-gunicorn-fastapi:${{ matrix.image.name }}
+          cache-to: type=inline
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v4
         with:

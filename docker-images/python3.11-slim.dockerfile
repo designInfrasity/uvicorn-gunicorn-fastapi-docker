@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # Stage 1: Builder - Install dependencies with build tools
 FROM python:3.11-slim AS builder
 
@@ -8,9 +9,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     make \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install dependencies with optimized pip flags and cleanup
+# Copy requirements and install dependencies with BuildKit cache mount for faster builds
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt && rm -rf /tmp/requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip pip install --no-cache-dir --upgrade -r /tmp/requirements.txt && rm -rf /tmp/requirements.txt
 
 # Stage 2: Runtime - Use slim base image without build tools
 FROM tiangolo/uvicorn-gunicorn:python3.11-slim
